@@ -20,6 +20,15 @@ public class Partie {
     private static Classement classement = new Classement();
     private static Journal j = new Journal("data/Journal.txt");
     
+    public void attendre(int ms){
+            try{
+                Thread.sleep(1);
+                } catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+
+        }
+
     public static Joueur lancerPartie(){
         int jour = 1;
 
@@ -30,6 +39,9 @@ public class Partie {
         afficherHistoire();
         attendrePasser();
         clearScreen();
+
+        
+
 
         while (jour < 16) { 
             clearScreen();
