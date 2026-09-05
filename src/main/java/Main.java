@@ -5,16 +5,15 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
-
 import moteur.Classement;
 import moteur.Partie;
 import moteur.TerminalPasPleinEcranException;
+import ui.ConsoleBrut;
+import ui.SaisieFleches;
 
 public class Main {
     public static void main(String[] args){
         boolean terminer = false;
-        Scanner scanner = new Scanner(System.in);
         String choix;
 
         while(!terminer){  
@@ -26,12 +25,12 @@ public class Main {
             } catch (IOException m) {
                 m.printStackTrace();
             }
-            System.out.print("Choix : ");
-            choix = scanner.next();
+            choix = SaisieFleches.lireTexte("Choix : ");
             if(choix.equals("1")){
                 try {
                     verifierTerminal();
                     Partie.lancerPartie();
+                    ConsoleBrut.restaurerModeNormal();
                 } catch (TerminalPasPleinEcranException e) {
                     System.err.println(e.getMessage());
                     try {
@@ -49,7 +48,7 @@ public class Main {
                     System.out.println("Impossible de lire le classement");
                 }
                 System.out.println("Appuyer sur 'x' pour quitter.");
-                while (!scanner.next().equals("x")) {
+                while (!SaisieFleches.lireTexte("").equals("x")) {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
@@ -63,7 +62,6 @@ public class Main {
             }
             
         }
-        scanner.close();
     }
 
     private static void verifierTerminal() throws TerminalPasPleinEcranException {

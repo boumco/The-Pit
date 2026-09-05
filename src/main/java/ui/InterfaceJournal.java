@@ -8,7 +8,6 @@ import java.util.Random;
 import java.util.Set;
 
 import org.jline.terminal.Terminal;
-import org.jline.terminal.TerminalBuilder;
 
 import moteur.EvenementMarche;
 import moteur.FaitDivers;
@@ -125,7 +124,8 @@ public class InterfaceJournal {
     }
 
     private static int[] tailleTerminal() {
-        try (Terminal terminal = TerminalBuilder.builder().system(true).build()) {
+        try {
+            Terminal terminal = ConsoleBrut.obtenir();
             int largeur = terminal.getWidth();
             int hauteur = terminal.getHeight();
             if (largeur < 100) {

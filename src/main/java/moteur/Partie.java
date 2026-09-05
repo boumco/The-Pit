@@ -37,8 +37,7 @@ public class Partie {
         int jour = 1;
 
         System.out.println("Quel est votre prénom ?");
-        System.out.print("Prénom : ");
-        joueurActuel = new Joueur(scInputJoueur.next(), 100, 1000, new Portefeuille<Entreprise>(listeEntreprises));
+        joueurActuel = new Joueur(SaisieFleches.lireTexte("Prénom : "), 100, 1000, new Portefeuille<Entreprise>(listeEntreprises));
 
         afficherHistoire();
         attendrePasser();
@@ -120,10 +119,11 @@ public class Partie {
 
     private static void choix1(List<Entreprise> listeEntreprises){
         int indexEntreprise = 0;
+        int bouton = 0;
         boolean ouvert = true;
         while (ouvert) {
             final Entreprise entreprise = listeEntreprises.get(indexEntreprise);
-            int bouton = SaisieFleches.choisirGrille(5, 1, selection -> {
+            bouton = SaisieFleches.choisirGrille(5, 1, bouton, selection -> {
                 clearScreen();
                 System.out.print(InterfaceBourse.afficher(entreprise, joueurActuel, selection));
             });
@@ -143,11 +143,7 @@ public class Partie {
 
     private static void acheterChez(Entreprise entrepriseChoisie){
         System.out.println();
-        System.out.print("Nombre de parts a acheter chez " + entrepriseChoisie.getNom() + " : ");
-        int nombrePart = scInputJoueur.nextInt();
-        if (scInputJoueur.hasNextLine()) {
-            scInputJoueur.nextLine();
-        }
+        int nombrePart = SaisieFleches.lireEntier("Nombre de parts a acheter chez " + entrepriseChoisie.getNom() + " : ");
         if (nombrePart <= 0) {
             System.out.println("Le nombre de parts doit etre positif.");
             SaisieFleches.attendreEntree();
@@ -166,12 +162,9 @@ public class Partie {
 
     private static void vendreChez(Entreprise entrepriseChoisie){
         System.out.println();
-        System.out.print("Parts disponibles : " + joueurActuel.getPortefeuille().getQuantite(entrepriseChoisie)
+        int nombrePart = SaisieFleches.lireEntier("Parts disponibles : "
+            + joueurActuel.getPortefeuille().getQuantite(entrepriseChoisie)
             + "   Nombre de parts a vendre : ");
-        int nombrePart = scInputJoueur.nextInt();
-        if (scInputJoueur.hasNextLine()) {
-            scInputJoueur.nextLine();
-        }
         if (!joueurActuel.vendre(entrepriseChoisie, nombrePart)) {
             System.out.println("Vente impossible : nombre de parts incorrect.");
             SaisieFleches.attendreEntree();
@@ -249,9 +242,6 @@ public class Partie {
     }
 
     public static void attendrePasser(){
-        if (scInputJoueur.hasNextLine()) {
-            scInputJoueur.nextLine();
-        }
         SaisieFleches.attendreEntree();
     }
 

@@ -38,8 +38,8 @@ public class LecteurTouches implements Runnable {
 
     private ActionTouche lireProchaineAction() throws IOException {
         NonBlockingReader reader = console.reader();
-        int octet = reader.read();
-        if (octet == -1) {
+        int octet = reader.read(80L);
+        if (octet == -1 || octet == NonBlockingReader.READ_EXPIRED) {
             return null;
         }
         if (octet == '\r' || octet == '\n') {

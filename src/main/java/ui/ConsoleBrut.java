@@ -9,12 +9,40 @@ import org.jline.utils.NonBlockingReader;
 
 public class ConsoleBrut implements AutoCloseable {
 
-    private final Terminal terminal;
-    private final Attributes modeNormal;
+    private static Terminal terminal;
+    private static Attributes modeNormal;
+    private static boolean hookInstalle;
+
+    public static synchronized Terminal obtenir() throws IOException {
+        if (terminal == null) {
+            terminal = TerminalBuilder.builder().system(true).build();
+            modeNormal = terminal.getAttributes().copy();
+            if (!hookInstalle) {
+                Runtime.getRuntime().addShutdownHook(new Thread(ConsoleBrut::restaurerModeNormal, "restore-tty"));
+                hookInstalle = true;
+            }
+        }
+        return terminal;
+    }
+
+    // A retenir : ne jamais fermer le Terminal systeme, sinon Windows coupe l'echo.
+    public static synchronized void restaurerModeNormal() {
+        if (terminal == null || modeNormal == null) {
+            return;
+        }
+        try {
+            Attributes attrs = modeNormal.copy();
+            attrs.setLocalFlag(Attributes.LocalFlag.ECHO, true);
+            attrs.setLocalFlag(Attributes.LocalFlag.ICANON, true);
+            terminal.echo(true);
+            terminal.setAttributes(attrs);
+        } catch (Exception ignored) {
+        }
+    }
 
     public ConsoleBrut() throws IOException {
-        terminal = TerminalBuilder.builder().system(true).build();
-        modeNormal = terminal.enterRawMode();
+        obtenir();
+        terminal.enterRawMode();
         terminal.echo(false);
     }
 
@@ -24,13 +52,6 @@ public class ConsoleBrut implements AutoCloseable {
 
     @Override
     public void close() {
-        try {
-            if (modeNormal != null) {
-                terminal.setAttributes(modeNormal);
-            }
-            terminal.close();
-        } catch (IOException e) {
-            System.err.println("Impossible de restaurer le terminal");
-        }
+        restaurerModeNormal();
     }
 }
