@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import modele.Entreprise;
@@ -19,6 +20,15 @@ public class Partie {
     private static Classement classement = new Classement();
     private static Journal j = new Journal("data/Journal.txt");
     
+    public void attendre(int ms){
+            try{
+                Thread.sleep(1);
+                } catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+
+        }
+
     public static Joueur lancerPartie(){
         int jour = 1;
 
@@ -30,11 +40,28 @@ public class Partie {
         attendrePasser();
         clearScreen();
 
+        
+
+
         while (jour < 16) { 
             clearScreen();
             boolean finJournee = false;
             if (jour!=1) {
                 joueurActuel.payerLoyer();
+               
+            }
+            Random rdm = new Random();
+            if(rdm.nextInt(4) == 2){
+                EvenementPerso event = EvenementPerso.genererEvenement();
+                System.out.println(event.toString());
+                System.out.println("Debug 1");
+                if(event.getInfluence().equals("Malus")){
+                    joueurActuel.setCash(joueurActuel.getCash()-event.getArgent());
+                    jour = jour - event.getJour();
+                } else {
+                    joueurActuel.setCash(joueurActuel.getCash()+event.getArgent());
+                    jour = jour + event.getJour();
+                }
             }
             while(!finJournee){
                 System.out.println(InterfaceJoueur.genererMenuJoueur(jour, joueurActuel));
