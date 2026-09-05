@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import modele.Entreprise;
+import modele.Joueur;
 import modele.TypeEntreprise;
 import ui.InterfaceJournal;
 
@@ -16,15 +17,19 @@ public class Journal {
 
     private String affichageJournal;
     private ArrayList<EvenementMarche> evenementMarches;
-    private ArrayList<EvenementMarche> evenementsNeutresDuJour; // Contient les évenement neutre du jour.
-    private ArrayList<EvenementMarche> evenementsNonNeutresDuJour; //Contient les évenement nonNeutre du jour.
+    private ArrayList<EvenementMarche> evenementsNeutresDuJour;
+    private ArrayList<EvenementMarche> evenementsNonNeutresDuJour;
+    private String pageDuJour;
+    private boolean editionPrete;
+    private boolean journalAcheteAujourdhui;
 
     public Journal(String affichageJounal, ArrayList<EvenementMarche> evenementMarches){
         this.affichageJournal = affichageJounal;
         this.evenementMarches = evenementMarches;
         this.evenementsNeutresDuJour = new ArrayList<>();
         this.evenementsNonNeutresDuJour = new ArrayList<>();
-
+        this.editionPrete = false;
+        this.journalAcheteAujourdhui = false;
     }
 
     public Journal(String affichageJournal){
@@ -95,16 +100,22 @@ public class Journal {
     }
 
 
-    public void afficherInformation() throws IOException{
+    public void preparerEditionDuJour() {
+        if (editionPrete) {
+            return;
+        }
+        ArrayList<String> lignes = DataLoader.lireCSV("data/events_marche.csv");
+        this.evenementMarches = DataLoader.chargerEventMarcheListe(lignes);
         this.viderInfoDuJour();
+
         if (this.evenementMarches == null || this.evenementMarches.isEmpty()) {
-            System.out.println("Aucun événement à afficher aujourd'hui.");
+            this.pageDuJour = "Aucun evenement a afficher aujourd'hui.\n";
+            this.editionPrete = true;
             return;
         }
 
         ArrayList<EvenementMarche> neutres = new ArrayList<>();
         ArrayList<EvenementMarche> nonNeutres = new ArrayList<>();
-
         for (int indice = 0; indice < this.evenementMarches.size(); indice++) {
             EvenementMarche event = this.evenementMarches.get(indice);
             event.setInfluence();
@@ -117,7 +128,6 @@ public class Journal {
 
         Random r = new Random();
         ArrayList<EvenementMarche> uneDuJour = new ArrayList<>();
-
         for (int indiceNeutre = 0; indiceNeutre < 3; indiceNeutre++) {
             if (!neutres.isEmpty()) {
                 int index = r.nextInt(neutres.size());
@@ -125,10 +135,8 @@ public class Journal {
                 this.ajouterEvenementsNeutres(eventChoisi);
                 uneDuJour.add(eventChoisi);
                 neutres.remove(index);
-                this.evenementMarches.remove(eventChoisi);
             }
         }
-
         for (int indiceNonNeutres = 0; indiceNonNeutres < 2; indiceNonNeutres++) {
             if (!nonNeutres.isEmpty()) {
                 int index = r.nextInt(nonNeutres.size());
@@ -136,7 +144,6 @@ public class Journal {
                 this.ajouterEvenementsNonNeutres(eventChoisi);
                 uneDuJour.add(0, eventChoisi);
                 nonNeutres.remove(index);
-                this.evenementMarches.remove(eventChoisi);
             }
         }
 
@@ -149,12 +156,37 @@ public class Journal {
         ArrayList<FaitDivers> pool = DataLoader.chargerFaitsDivers();
         ArrayList<FaitDivers> choisis = new ArrayList<>();
         int maxFaits = Math.min(5, pool.size());
-        for (int i = 0; i < maxFaits; i++) {
-            int index = r.nextInt(pool.size());
-            choisis.add(pool.remove(index));
+        for (int i = 0; i < maxFaits && !pool.isEmpty(); i++) {
+            choisis.add(pool.remove(r.nextInt(pool.size())));
         }
 
-        System.out.print(InterfaceJournal.afficher(une, autresMarche, choisis));
+        this.pageDuJour = InterfaceJournal.afficher(une, autresMarche, choisis);
+        this.editionPrete = true;
+    }
+
+    public void afficherInformation() {
+        if (!editionPrete) {
+            preparerEditionDuJour();
+        }
+        System.out.print(pageDuJour);
+    }
+
+    public boolean acheterJournal(Joueur joueur) {
+        if (journalAcheteAujourdhui) {
+            return true;
+        }
+        if (!joueur.payer(1)) {
+            return false;
+        }
+        journalAcheteAujourdhui = true;
+        return true;
+    }
+
+    public void nouvelleJournee() {
+        editionPrete = false;
+        pageDuJour = null;
+        journalAcheteAujourdhui = false;
+        viderInfoDuJour();
     }
 
     public void changementValeurEntreprise(List<Entreprise> listeEntreprises){

@@ -54,25 +54,25 @@ public class Partie {
                 joueurActuel.payerLoyer();
                
             }
+            EvenementPerso eventPersoDuJour = null;
             Random rdm = new Random();
             if(rdm.nextInt(4) == 2){
-                EvenementPerso event = EvenementPerso.genererEvenement();
-                
-                if(event.getInfluence().equals("Malus")){
-                    Couleur.println(event.toString(), false, COULEUR.ROUGE);
-                    joueurActuel.setCash(joueurActuel.getCash()+event.getArgent());
-                    jour = jour + event.getJour();
+                eventPersoDuJour = EvenementPerso.genererEvenement();
+                if(eventPersoDuJour.getInfluence().equals("Malus")){
+                    joueurActuel.setCash(joueurActuel.getCash()+eventPersoDuJour.getArgent());
+                    jour = jour + eventPersoDuJour.getJour();
                 } else {
-                    Couleur.println(event.toString(), false, COULEUR.VERT);
-                    joueurActuel.setCash(joueurActuel.getCash()+event.getArgent());
-                    jour = jour - event.getJour();
+                    joueurActuel.setCash(joueurActuel.getCash()+eventPersoDuJour.getArgent());
+                    jour = jour - eventPersoDuJour.getJour();
                 }
             }
+            j.preparerEditionDuJour();
             final int jourCourant = jour;
+            final EvenementPerso telegramme = eventPersoDuJour;
             while(!finJournee){
                 int choixJoueur = SaisieFleches.choisirGrille(2, 2, index -> {
                     clearScreen();
-                    System.out.print(InterfaceJoueur.genererMenuJoueur(jourCourant, joueurActuel, index));
+                    System.out.print(InterfaceJoueur.genererMenuJoueur(jourCourant, joueurActuel, index, telegramme));
                 });
                 if (choixJoueur == 0) {
                     choix1(listeEntreprises);
@@ -86,6 +86,7 @@ public class Partie {
                 }
             }
             j.changementValeurEntreprise(listeEntreprises);
+            j.nouvelleJournee();
             jour ++;
         }
         if (joueurActuel.aGagne()) {
@@ -200,14 +201,13 @@ public class Partie {
     }
 
     private static void journal(){
-        ArrayList<String> ligneFichier = DataLoader.lireCSV("data/events_marche.csv");
-        ArrayList<EvenementMarche> event = DataLoader.chargerEventMarcheListe(ligneFichier);
-        j.setEvenementMarches(event);
-        try {
-            j.afficherInformation();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!j.acheterJournal(joueurActuel)) {
+            System.out.println("Pas assez d'argent : le journal coute 1€.");
+            SaisieFleches.attendreEntree();
+            return;
         }
+        clearScreen();
+        j.afficherInformation();
         System.out.println();
         Couleur.println("Entree pour revenir", false, COULEUR.JAUNE);
         SaisieFleches.attendreEntree();

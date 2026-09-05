@@ -77,6 +77,14 @@ public class Joueur extends Personnage {
         return portefeuille;
     }
 
+    public boolean payer(double montant) {
+        if (cash < montant) {
+            return false;
+        }
+        cash -= montant;
+        return true;
+    }
+
     public void payerLoyer() {
         this.cash -= 15;
         System.out.println("Vous venez de payer 15€ de loyer");
