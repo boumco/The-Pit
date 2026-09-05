@@ -67,10 +67,11 @@ public class Partie {
                     jour = jour - event.getJour();
                 }
             }
+            final int jourCourant = jour;
             while(!finJournee){
                 int choixJoueur = SaisieFleches.choisirGrille(2, 2, index -> {
                     clearScreen();
-                    System.out.print(InterfaceJoueur.genererMenuJoueur(jour, joueurActuel, index));
+                    System.out.print(InterfaceJoueur.genererMenuJoueur(jourCourant, joueurActuel, index));
                 });
                 if (choixJoueur == 0) {
                     choix1(listeEntreprises);
