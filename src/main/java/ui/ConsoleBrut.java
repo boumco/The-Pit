@@ -16,7 +16,7 @@ public class ConsoleBrut implements AutoCloseable {
     public static synchronized Terminal obtenir() throws IOException {
         if (terminal == null) {
             terminal = TerminalBuilder.builder().system(true).build();
-            modeNormal = terminal.getAttributes().copy();
+            modeNormal = new Attributes(terminal.getAttributes());
             if (!hookInstalle) {
                 Runtime.getRuntime().addShutdownHook(new Thread(ConsoleBrut::restaurerModeNormal, "restore-tty"));
                 hookInstalle = true;
@@ -31,7 +31,7 @@ public class ConsoleBrut implements AutoCloseable {
             return;
         }
         try {
-            Attributes attrs = modeNormal.copy();
+            Attributes attrs = new Attributes(modeNormal);
             attrs.setLocalFlag(Attributes.LocalFlag.ECHO, true);
             attrs.setLocalFlag(Attributes.LocalFlag.ICANON, true);
             terminal.echo(true);
