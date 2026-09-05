@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import  moteur.Partie;
+
 public class Classement {
 
     public void ajouterScore(String nom, double montant) throws IOException {
@@ -27,4 +29,5 @@ public class Classement {
         }
         fichier.close();
     }
+
 }
