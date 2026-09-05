@@ -12,6 +12,7 @@ import modele.Joueur;
 import modele.Portefeuille;
 import ui.Couleur;
 import ui.Couleur.COULEUR;
+import ui.InterfaceBourse;
 import ui.InterfaceJoueur;
 import ui.SaisieFleches;
 
@@ -117,62 +118,66 @@ public class Partie {
     }
 
     private static void choix1(List<Entreprise> listeEntreprises){
-        boolean saisieValide = false;
-        for (Entreprise e : listeEntreprises) {
-            System.out.println(e.getNom() + " : " + e.getValeurAction() + "€");
-        }
-        System.out.print("\n 1. Acheter\n 2. Vendre\n 3. Fermer\nChoix :");
-        while (!saisieValide) {
-            int choixJoueur = scInputJoueur.nextInt();
-            if (choixJoueur == 1) {
-                acheter();
-                saisieValide = true;
-            } else if (choixJoueur == 2) {
-                vendre();
-                saisieValide = true;
-            } else if (choixJoueur == 3){
-                System.out.println("Retour.");
-                saisieValide = true;
+        int indexEntreprise = 0;
+        boolean ouvert = true;
+        while (ouvert) {
+            final Entreprise entreprise = listeEntreprises.get(indexEntreprise);
+            int bouton = SaisieFleches.choisirGrille(5, 1, selection -> {
+                clearScreen();
+                System.out.print(InterfaceBourse.afficher(entreprise, joueurActuel, selection));
+            });
+            if (bouton == 0) {
+                acheterChez(entreprise);
+            } else if (bouton == 1) {
+                vendreChez(entreprise);
+            } else if (bouton == 2) {
+                indexEntreprise = (indexEntreprise + 1) % listeEntreprises.size();
+            } else if (bouton == 3) {
+                indexEntreprise = (indexEntreprise - 1 + listeEntreprises.size()) % listeEntreprises.size();
             } else {
-                System.out.println("Ce n'est pas possible de choisir cette réponse.");
+                ouvert = false;
             }
         }
-        System.out.println();
     }
 
-    private static void acheter(){
-        List<String> libelles = new ArrayList<>();
-        for (Entreprise e : listeEntreprises) {
-            libelles.add(e.getNom() + " : " + String.format("%.2f", e.getValeurAction()) + "€");
-        }
-        int index = SaisieFleches.choisirListe(libelles);
-        Entreprise entrepriseChoisie = listeEntreprises.get(index);
-
-        System.out.println("Nombre de parts a acheter chez " + entrepriseChoisie.getNom() + " : ");
+    private static void acheterChez(Entreprise entrepriseChoisie){
+        System.out.println();
+        System.out.print("Nombre de parts a acheter chez " + entrepriseChoisie.getNom() + " : ");
         int nombrePart = scInputJoueur.nextInt();
+        if (scInputJoueur.hasNextLine()) {
+            scInputJoueur.nextLine();
+        }
         if (nombrePart <= 0) {
             System.out.println("Le nombre de parts doit etre positif.");
+            SaisieFleches.attendreEntree();
             return;
         }
         if (!joueurActuel.acheter(entrepriseChoisie, nombrePart)) {
             System.out.println("Achat impossible : vous n'avez pas assez d'argent ("
                 + String.format("%.2f", joueurActuel.getCash()) + " €, besoin de "
                 + String.format("%.2f", nombrePart * entrepriseChoisie.getValeurAction()) + " €).");
+            SaisieFleches.attendreEntree();
             return;
         }
-        System.out.println("Vous venez d'acheté " + nombrePart + " part(s) dans l'entreprise " + entrepriseChoisie.getNom() + ".");
+        System.out.println("Vous venez d'acheter " + nombrePart + " part(s) dans " + entrepriseChoisie.getNom() + ".");
+        SaisieFleches.attendreEntree();
     }
 
-    private static void vendre(){
-        System.out.print("Chez quel entreprise souhaitez-vous vendre une/des action(s) ?\n Nom de l'entreprise : ");
-        Entreprise entrepriseChoisie = entrepriseValide();
-        System.out.print("Combien d'action souhaitez-vous acheter ?\n Nombre de part disponible : " + joueurActuel.getPortefeuille().getQuantite(entrepriseChoisie) + "\n Nombre de part à vendre : ");
+    private static void vendreChez(Entreprise entrepriseChoisie){
+        System.out.println();
+        System.out.print("Parts disponibles : " + joueurActuel.getPortefeuille().getQuantite(entrepriseChoisie)
+            + "   Nombre de parts a vendre : ");
         int nombrePart = scInputJoueur.nextInt();
-        while (!joueurActuel.vendre(entrepriseChoisie, nombrePart)) {
-            System.out.print("Le nombre de part saisie est incorrect.\nNombre de part : ");
-            nombrePart = scInputJoueur.nextInt();
+        if (scInputJoueur.hasNextLine()) {
+            scInputJoueur.nextLine();
         }
-        System.out.println("Vous venez de vendre " + nombrePart + " part(s) dans l'entreprise " + entrepriseChoisie.getNom() + ".");
+        if (!joueurActuel.vendre(entrepriseChoisie, nombrePart)) {
+            System.out.println("Vente impossible : nombre de parts incorrect.");
+            SaisieFleches.attendreEntree();
+            return;
+        }
+        System.out.println("Vous venez de vendre " + nombrePart + " part(s) dans " + entrepriseChoisie.getNom() + ".");
+        SaisieFleches.attendreEntree();
     }
 
     private static Entreprise entrepriseValide(){
