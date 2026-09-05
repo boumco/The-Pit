@@ -68,16 +68,18 @@ public class Partie {
                 }
             }
             while(!finJournee){
-                System.out.println(InterfaceJoueur.genererMenuJoueur(jour, joueurActuel));
-                String choixJoueur = scInputJoueur.next();
-                if (choixJoueur.equals("1")) {
+                int choixJoueur = SaisieFleches.choisirGrille(2, 2, index -> {
+                    clearScreen();
+                    System.out.print(InterfaceJoueur.genererMenuJoueur(jour, joueurActuel, index));
+                });
+                if (choixJoueur == 0) {
                     choix1(listeEntreprises);
-                } else if (choixJoueur.equals("2")) {
+                } else if (choixJoueur == 1) {
                     journal();
-                } else if (choixJoueur.equals("3")) {
+                } else if (choixJoueur == 2) {
                     dormir();
                     finJournee = true;
-                } else if (choixJoueur.equals("4")) {
+                } else if (choixJoueur == 3) {
                     return null;
                 }
             }
