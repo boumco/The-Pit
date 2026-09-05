@@ -1,0 +1,212 @@
+package moteur;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import modele.Entreprise;
+import modele.Joueur;
+import modele.Portefeuille;
+import ui.InterfaceJoueur;
+
+public class Partie {
+
+    private static Scanner scInputJoueur = new Scanner(System.in);
+    private static Joueur joueurActuel;
+    private static List<Entreprise> listeEntreprises = DataLoader.chargerEntreprise();
+    private static Classement classement = new Classement();
+    private static Journal j = new Journal("data/Journal.txt");
+    
+    public static Joueur lancerPartie(){
+        int jour = 1;
+
+        System.out.println("Quel est votre prénom ?");
+        System.out.print("Prénom : ");
+        joueurActuel = new Joueur(scInputJoueur.next(), 100, 1000, new Portefeuille<Entreprise>(listeEntreprises));
+
+        afficherHistoire();
+        attendrePasser();
+        clearScreen();
+
+        while (jour < 16) { 
+            clearScreen();
+            boolean finJournee = false;
+            if (jour!=1) {
+                joueurActuel.payerLoyer();
+            }
+            while(!finJournee){
+                System.out.println(InterfaceJoueur.genererMenuJoueur(jour, joueurActuel));
+                String choixJoueur = scInputJoueur.next();
+                if (choixJoueur.equals("1")) {
+                    choix1(listeEntreprises);
+                } else if (choixJoueur.equals("2")) {
+                    journal();
+                } else if (choixJoueur.equals("3")) {
+                    dormir();
+                    finJournee = true;
+                } else if (choixJoueur.equals("4")) {
+                    return null;
+                }
+            }
+            j.changementValeurEntreprise(listeEntreprises);
+            jour ++;
+        }
+        if (joueurActuel.aGagne()) {
+            try {
+                classement.ajouterScore(joueurActuel.getNom(), joueurActuel.getCash() - joueurActuel.getDette());
+            } catch (IOException e) {
+                System.err.println("Erreur Input");
+            }
+            System.out.println("Vous avez remboursé votre dette !");
+        } else {
+            System.out.println("Malheureusement, vous avez du remboursé votre dette en nature...");
+        }
+        System.out.println("Fin de la partie.");
+        return joueurActuel;
+    }
+
+    private static void afficherHistoire(){
+        clearScreen();
+        try(FileReader histoire = new FileReader("data/Histoire.txt")) {
+            int histoire_valeur;
+            while((histoire_valeur = histoire.read()) != -1){
+                char c = (char) histoire_valeur;
+                try{
+                Thread.sleep(1);
+                System.out.print(c);
+                } catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+            System.out.println();
+        }
+        catch (IOException h) {
+            h.printStackTrace();
+        }
+    }
+
+    private static void choix1(List<Entreprise> listeEntreprises){
+        boolean saisieValide = false;
+        for (Entreprise e : listeEntreprises) {
+            System.out.println(e.getNom() + " : " + e.getValeurAction() + "€");
+        }
+        System.out.print("\n 1. Acheter\n 2. Vendre\n 3. Fermer\nChoix :");
+        while (!saisieValide) {
+            int choixJoueur = scInputJoueur.nextInt();
+            if (choixJoueur == 1) {
+                acheter();
+                saisieValide = true;
+            } else if (choixJoueur == 2) {
+                vendre();
+                saisieValide = true;
+            } else if (choixJoueur == 3){
+                System.out.println("Retour.");
+                saisieValide = true;
+            } else {
+                System.out.println("Ce n'est pas possible de choisir cette réponse.");
+            }
+        }
+        System.out.println();
+    }
+
+    private static void acheter(){
+        System.out.println("Combien d'action souhaitez-vous acheter ?\n Nombre de part à acheter : ");
+        int nombrePart = scInputJoueur.nextInt();
+        System.out.println("Chez quel entreprise souhaitez-vous acheter une/des actions ?\n Nom de l'entreprise : ");
+        Entreprise entrepriseChoisie = entrepriseValide();
+        joueurActuel.acheter(entrepriseChoisie, nombrePart);
+        System.out.println("Vous venez d'acheté " + nombrePart + " part(s) dans l'entreprise " + entrepriseChoisie.getNom() + ".");
+    }
+
+    private static void vendre(){
+        System.out.print("Chez quel entreprise souhaitez-vous vendre une/des action(s) ?\n Nom de l'entreprise : ");
+        Entreprise entrepriseChoisie = entrepriseValide();
+        System.out.print("Combien d'action souhaitez-vous acheter ?\n Nombre de part disponible : " + joueurActuel.getPortefeuille().getQuantite(entrepriseChoisie) + "\n Nombre de part à vendre : ");
+        int nombrePart = scInputJoueur.nextInt();
+        while (!joueurActuel.vendre(entrepriseChoisie, nombrePart)) {
+            System.out.print("Le nombre de part saisie est incorrect.\nNombre de part : ");
+            nombrePart = scInputJoueur.nextInt();
+        }
+        System.out.println("Vous venez de vendre " + nombrePart + " part(s) dans l'entreprise " + entrepriseChoisie.getNom() + ".");
+    }
+
+    private static Entreprise entrepriseValide(){
+        String nomEntreprise = scInputJoueur.next();
+        Entreprise entrepriseChoisie = null;
+        boolean valide = false;
+        while (!valide) {
+            for (Entreprise entreprise : listeEntreprises) {
+                if (entreprise.getNom().equals(nomEntreprise)) {
+                    valide = true;
+                    entrepriseChoisie = entreprise;
+                }
+            }
+            if (!valide) {
+                System.out.println("Le nom de l'entreprise n'est pas correcte. Veuillez le réécrire.");
+                nomEntreprise = scInputJoueur.next();
+            }
+        }
+        return entrepriseChoisie;
+    }
+
+    private static void journal(){
+        ArrayList<String> ligneFichier = DataLoader.lireCSV("data/events_marche.csv");
+        ArrayList<EvenementMarche> event = DataLoader.chargerEventMarcheListe(ligneFichier);
+        j.setEvenementMarches(event);
+        try {
+            j.afficherInformation();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void dormir(){
+        try {
+            afficherTXT("Dormir1.txt",0);
+            Thread.sleep(1000);
+            afficherTXT("Dormir2.txt",0);
+            Thread.sleep(1000);
+            afficherTXT("Dormir3.txt",0);
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.err.println("Erreur, affichage interrompu");
+        }
+    }
+
+    private static void afficherTXT(String nomFichier, int temps){
+        try(FileReader fichier = new FileReader("data/" + nomFichier)) {
+            int fichier_valeur;
+            while((fichier_valeur = fichier.read()) != -1){
+                char c = (char) fichier_valeur;
+                System.out.print(c);
+                Thread.sleep(temps);
+            }
+            System.out.println();
+        }
+        catch (IOException h) {
+            h.printStackTrace();
+        } catch (InterruptedException e) {
+            System.err.println("Erreur, affichage interrompu");
+        }
+    }
+
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    public static void attendrePasser(){
+        System.out.println("Appuyer sur 'x' pour quitter.");
+        while (!scInputJoueur.next().equals("x")) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                System.err.println("Erreur interrompu");
+            }
+        }
+    }
+
+}
+

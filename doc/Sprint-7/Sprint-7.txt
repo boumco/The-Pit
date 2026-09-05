@@ -1,0 +1,21 @@
+# Sprint 7
+
+Scrum Master : Alan MERLIN
+
+## Démo + Planification du sprint suivant
+
+### Ce que nous avons fait durant ce sprint
+Nous avons terminer l'US classement,En tant que Joueur, je souhaite avoir cet esprit de compétition entre d'autres participants afin de créer un autre aspect au jeu, nous avons donc le jeu de base de rembourser la dette mais aussi l'autre aspect d'obtenir le meilleur score de fin 
+### Ce que nous allons faire durant le prochain sprint
+nous allons faire les US loyer, liaison inter ,gestion journal
+## Rétrospective
+
+### Sur quoi avons nous butté ?
+
+nous avons butté sur les merge ,vu que tout le monde a travailler de son coté lors de notre démo l'avancement du projet ne se voyer pas 
+
+### PDCA
+la systeme de bourse dans notre jeu 
+appliquer les ascii en rapport avec l'évolution de la bourse,que le journal a impact reel sur la bourse,pouvoir vendre acheter une actions
+une grande concentration sur le systeme de bourse
+

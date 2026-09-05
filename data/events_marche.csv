@@ -1,0 +1,101 @@
+intitule;valeur;nomEntreprise
+Les résultats trimestriels sont bien meilleurs que prévu, avec une forte hausse des bénéfices et des ventes;3;Petrolz
+Une panne importante touche plusieurs installations de production et entraîne des pertes financières conséquentes;-2;Energie3000
+Le constructeur dévoile un nouveau modèle qui rencontre immédiatement un grand succès auprès du public;3;Renaud
+Une importante récolte permet à l'entreprise d'augmenter fortement ses stocks et ses prévisions de ventes;2;BléMaster
+Le prix du pétrole chute brutalement sur les marchés internationaux, réduisant les perspectives de bénéfices;-2;Petrolz
+Un nouveau contrat avec plusieurs grandes villes garantit des revenus importants pour les prochaines années;3;Energie3000
+Les ventes de véhicules progressent légèrement malgré un contexte économique encore difficile;1;Renaud
+Une maladie touche une partie des récoltes et fait craindre une diminution de la production;-2;BléMaster
+L'entreprise découvre un nouveau gisement particulièrement prometteur qui pourrait augmenter considérablement sa production;3;Petrolz
+Des problèmes techniques ralentissent temporairement la production de plusieurs centrales;-1;Energie3000
+Une campagne publicitaire très réussie améliore fortement l'image de marque du constructeur;2;Renaud
+Les prix des céréales augmentent fortement, permettant à l'entreprise d'améliorer ses marges;2;BléMaster
+Une importante fuite sur un site de production provoque une interruption temporaire des activités;-3;Petrolz
+La société annonce la construction d'une nouvelle centrale utilisant une technologie plus performante;2;Energie3000
+Un concurrent lance un véhicule moins cher, ce qui risque de réduire les ventes de Renaud;-2;Renaud
+Un nouveau partenariat avec des agriculteurs locaux sécurise l'approvisionnement de l'entreprise;1;BléMaster
+Les investisseurs accueillent très favorablement la nomination d'une nouvelle direction ambitieuse;2;Petrolz
+La demande en électricité augmente fortement pendant une période de forte consommation;2;Energie3000
+Les ventes automobiles restent quasiment stables sur le dernier mois;0;Renaud
+Une baisse de la demande mondiale fait reculer les commandes de produits agricoles;-2;BléMaster
+Un accord commercial international ouvre l'accès de l'entreprise à plusieurs nouveaux marchés;3;Petrolz
+Une hausse importante des coûts de maintenance réduit les bénéfices prévus pour l'année;-1;Energie3000
+Le lancement d'un véhicule électrique reçoit des critiques mitigées de la part des consommateurs;-1;Renaud
+Les conditions météorologiques idéales permettent une récolte exceptionnelle;3;BléMaster
+Une baisse inattendue de la demande énergétique entraîne une diminution des prévisions de production;-1;Petrolz
+Un nouveau procédé permet de réduire les coûts de production tout en augmentant le rendement;3;Energie3000
+Un problème de logiciel affecte plusieurs véhicules et oblige l'entreprise à organiser un rappel;-2;Renaud
+Les exportations vers l'étranger progressent légèrement grâce à de nouveaux contrats;1;BléMaster
+Le groupe annonce des bénéfices records après une période de forte croissance de ses activités;3;Petrolz
+Une réglementation plus stricte augmente les coûts d'exploitation des différentes installations;-2;Energie3000
+La société lance une nouvelle plateforme numérique qui attire rapidement de nombreux utilisateurs;3;TechNova
+Une faille de sécurité importante affecte plusieurs produits et entraîne des coûts élevés;-3;TechNova
+Les ventes de logiciels progressent légèrement grâce à plusieurs nouveaux contrats;1;TechNova
+Un partenariat avec un acteur majeur du cloud améliore les perspectives commerciales;2;TechNova
+Les résultats trimestriels sont inférieurs aux attentes des analystes;-2;TechNova
+Une innovation majeure permet de réduire les coûts de développement;2;TechNova
+La demande pour les services numériques reste stable sur le trimestre;0;TechNova
+Un retard de lancement repousse plusieurs contrats importants;-1;TechNova
+L'entreprise gagne des parts de marché grâce à une nouvelle offre;3;TechNova
+La hausse des coûts des serveurs pèse légèrement sur les marges;-1;TechNova
+Un nouveau médicament obtient une autorisation de commercialisation sur un marché important;3;PharmaPlus
+Les essais cliniques d'un traitement prometteur donnent des résultats décevants;-3;PharmaPlus
+Les ventes de médicaments progressent légèrement grâce à une demande soutenue;1;PharmaPlus
+Un partenariat de recherche ouvre de nouvelles perspectives de développement;2;PharmaPlus
+Un rappel de produit entraîne des coûts exceptionnels importants;-2;PharmaPlus
+La société réduit ses coûts de production grâce à une nouvelle usine;2;PharmaPlus
+Les résultats restent proches des prévisions des analystes;0;PharmaPlus
+Une réglementation plus stricte augmente les dépenses de conformité;-1;PharmaPlus
+Un nouveau traitement rencontre un accueil très favorable auprès des professionnels;3;PharmaPlus
+Une baisse temporaire des commandes hospitalières réduit les revenus;-1;PharmaPlus
+Le constructeur présente un véhicule électrique qui reçoit un excellent accueil;3;GreenAuto
+Une pénurie de batteries ralentit fortement la production;-2;GreenAuto
+Les ventes progressent légèrement sur plusieurs marchés européens;1;GreenAuto
+Un accord avec un fabricant de batteries sécurise l'approvisionnement;2;GreenAuto
+Un défaut technique provoque un rappel de plusieurs milliers de véhicules;-3;GreenAuto
+Une nouvelle usine permet d'augmenter fortement les capacités de production;3;GreenAuto
+Les commandes restent stables malgré un marché automobile incertain;0;GreenAuto
+La hausse du prix des matières premières réduit les marges;-1;GreenAuto
+Une campagne commerciale réussie augmente fortement les commandes;2;GreenAuto
+Un concurrent lance un modèle moins cher et accentue la pression sur les prix;-2;GreenAuto
+Un nouveau produit alimentaire rencontre immédiatement un grand succès en magasin;3;FoodMarket
+Une contamination sur une chaîne de production entraîne une interruption temporaire;-3;FoodMarket
+Les ventes progressent légèrement grâce à de nouveaux distributeurs;1;FoodMarket
+Un contrat avec une grande chaîne de supermarchés améliore les perspectives;2;FoodMarket
+La hausse du coût des matières premières réduit les bénéfices;-2;FoodMarket
+Une nouvelle méthode de production permet d'améliorer les rendements;2;FoodMarket
+Les ventes restent globalement stables sur le trimestre;0;FoodMarket
+Des problèmes logistiques retardent plusieurs livraisons;-1;FoodMarket
+L'entreprise ouvre plusieurs nouveaux marchés à l'étranger;3;FoodMarket
+Une baisse de la demande sur un produit phare réduit légèrement le chiffre d'affaires;-1;FoodMarket
+La compagnie annonce une forte hausse des réservations pour la prochaine saison;3;AeroFrance
+Une série de problèmes techniques entraîne l'immobilisation de plusieurs appareils;-3;AeroFrance
+Le trafic passagers progresse légèrement par rapport au trimestre précédent;1;AeroFrance
+Un accord avec plusieurs entreprises augmente les revenus liés aux voyages d'affaires;2;AeroFrance
+La hausse du prix du carburant réduit fortement les bénéfices prévus;-2;AeroFrance
+Une nouvelle flotte plus économe permet de réduire les coûts d'exploitation;2;AeroFrance
+Le nombre de passagers reste quasiment inchangé sur le mois;0;AeroFrance
+Des retards importants perturbent plusieurs liaisons internationales;-1;AeroFrance
+L'ouverture de nouvelles lignes internationales améliore les perspectives de croissance;3;AeroFrance
+Une baisse des réservations sur certaines destinations pèse légèrement sur les revenus;-1;AeroFrance
+La production augmente nettement grâce à l'ouverture de plusieurs nouveaux sites d'exploitation;3;Petrolz
+Le groupe réussit à réduire sa dette plus rapidement que prévu;2;Petrolz
+Une innovation technologique permet d'augmenter considérablement la production d'énergie;3;Energie3000
+Le groupe réduit ses dépenses inutiles et améliore progressivement sa rentabilité;2;Energie3000
+Un nouveau modèle haut de gamme devient rapidement populaire auprès des consommateurs;3;Renaud
+Le constructeur signe un partenariat avec une entreprise spécialisée dans les batteries;2;Renaud
+Une nouvelle usine augmente fortement les capacités de production;3;Renaud
+Une hausse des exportations vers l'Asie augmente fortement le chiffre d'affaires;3;BléMaster
+Une nouvelle méthode de production permet d'augmenter les rendements;3;BléMaster
+Une hausse des ventes dans les supermarchés améliore les revenus;2;BléMaster
+Une nouvelle application bancaire rencontre un succès rapide auprès des utilisateurs;3;FinTechPlus
+Une panne importante perturbe les transactions pendant plusieurs heures;-2;FinTechPlus
+Le nombre de nouveaux clients augmente légèrement ce trimestre;1;FinTechPlus
+Un partenariat avec une grande banque améliore les perspectives commerciales;2;FinTechPlus
+Une hausse des coûts technologiques réduit les bénéfices prévus;-1;FinTechPlus
+Les résultats trimestriels sont conformes aux attentes des analystes;0;FinTechPlus
+Une nouvelle solution de paiement permet de gagner des parts de marché;3;FinTechPlus
+Une réglementation supplémentaire augmente les coûts de conformité;-2;FinTechPlus
+La société réduit ses dépenses opérationnelles et améliore sa rentabilité;2;FinTechPlus
+Un incident de sécurité affecte temporairement la confiance des clients;-2;FinTechPlus

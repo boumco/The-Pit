@@ -1,0 +1,56 @@
+.
+├── bin
+│   ├── TypeEntreprise.class
+│   └── main
+│       ├── Entreprise.class
+│       ├── TypeEntreprise.class
+│       └── main.class
+├── data
+│   ├── HIstoire.txt
+│   ├── Menu.txt
+│   ├── entreprises.csv
+│   ├── event_perso.csv
+│   └── events_marche.csv
+├── doc
+│   ├── Sprint-1
+│   │   ├── README.md
+│   │   └── infoDev.md
+│   ├── Sprint-2
+│   │   └── README.md
+│   └── sprint-0
+│       └── README.md
+├── groupe-4.iml
+├── lib
+│   └── machin.java
+├── src
+│   ├── groupe-41.iml
+│   ├── main
+│   │   └── java
+│   │       ├── Main.java
+│   │       ├── modele
+│   │       │   ├── Entreprise.java
+│   │       │   ├── Joueur.java
+│   │       │   ├── Portefeuille.java
+│   │       │   ├── Transaction.java
+│   │       │   └── TypeEntreprise.java
+│   │       ├── moteur
+│   │       │   ├── ArticleJounral.java
+│   │       │   ├── Bourse.java
+│   │       │   ├── DataLoader.java
+│   │       │   ├── EvenementMarche.java
+│   │       │   ├── EvenementPerso.java
+│   │       │   ├── Event.java
+│   │       │   ├── GenerateurEvenement.java
+│   │       │   ├── Journal.java
+│   │       │   ├── Partie.java
+│   │       │   └── StructureMauvaiseException.java
+│   │       ├── score
+│   │       │   └── TableauScores.java
+│   │       └── ui
+│   │           └── Interface.java
+│   └── test
+│       ├── EntrepriseTest.java
+│       └── test.java
+└── tree.txt
+
+17 directories, 37 files
