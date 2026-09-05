@@ -51,7 +51,26 @@ public class EvenementPerso extends Event {
         evenementChoisi.setInfluence();
         return evenementChoisi;
     }
+    
+    public int getArgent() {
+        return argent;
+    }
 
+    public void setArgent(int argent) {
+        this.argent = argent;
+    }
+
+    public int getJour() {
+        return jour;
+    }
+
+    public void setJour(int jour) {
+        this.jour = jour;
+    }
+
+    public String getInfluence(){
+        return this.influence;
+    }
     public String toString() {
         return this.intitule + " : " + this.argent + " euros, " + this.jour + " jour(s) perdu(s)";
     }

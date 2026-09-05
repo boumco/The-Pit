@@ -64,6 +64,18 @@ public class Joueur extends Personnage {
     public double getDette() {
         return dette;
     }
+    
+    public void setCash(double cash) {
+        this.cash = cash;
+    }
+
+    public void setDette(double dette) {
+        this.dette = dette;
+    }
+
+    public void setPortefeuille(Portefeuille<Entreprise> portefeuille) {
+        this.portefeuille = portefeuille;
+    }
 
     public Portefeuille getPortefeuille() {
         return portefeuille;
@@ -72,6 +84,7 @@ public class Joueur extends Personnage {
     public void payerLoyer() {
         this.cash -= 15;
         System.out.println("Vous venez de payer 15€ de loyer");
+        
     }
 
 }
