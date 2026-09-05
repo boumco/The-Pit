@@ -91,6 +91,23 @@ public class DataLoader {
     }
 
 
+    public static ArrayList<FaitDivers> chargerFaitsDivers(){
+        ArrayList<FaitDivers> faits = new ArrayList<>();
+        ArrayList<String> lignes = lireCSV(file_path + File.separator + "faits_divers.csv");
+        for (int i = 0; i < lignes.size(); i++) {
+            String ligne = lignes.get(i);
+            if (ligne == null || ligne.isBlank()) {
+                continue;
+            }
+            String[] parts = ligne.split(";", 3);
+            if (parts.length < 3) {
+                continue;
+            }
+            faits.add(new FaitDivers(parts[0], parts[1], parts[2]));
+        }
+        return faits;
+    }
+
     public static ArrayList<String> lireCSV(String nomFichier){
         // Renvoie les lignes d'un fichier CSV.
         ArrayList<String>  retour = new ArrayList<>();
