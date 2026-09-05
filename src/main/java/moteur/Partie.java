@@ -10,6 +10,8 @@ import java.util.Scanner;
 import modele.Entreprise;
 import modele.Joueur;
 import modele.Portefeuille;
+import ui.COULEUR;
+import ui.Couleur;
 import ui.InterfaceJoueur;
 
 public class Partie {
@@ -97,17 +99,12 @@ public class Partie {
     private static void afficherHistoire(){
         clearScreen();
         try(FileReader histoire = new FileReader("data/Histoire.txt")) {
+            StringBuilder texte = new StringBuilder();
             int histoire_valeur;
             while((histoire_valeur = histoire.read()) != -1){
-                char c = (char) histoire_valeur;
-                try{
-                Thread.sleep(1);
-                System.out.print(c);
-                } catch(InterruptedException e){
-                    e.printStackTrace();
-                }
+                texte.append((char) histoire_valeur);
             }
-            System.out.println();
+            Couleur.println(texte.toString(), false, COULEUR.JAUNE, 8);
         }
         catch (IOException h) {
             h.printStackTrace();
@@ -225,14 +222,20 @@ public class Partie {
     }
 
     public static void attendrePasser(){
-        System.out.println("Appuyer sur 'x' pour quitter.");
-        while (!scInputJoueur.next().equals("x")) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                System.err.println("Erreur interrompu");
-            }
+        System.out.println();
+        Couleur.println("   _____ _   _ _____ ____  _____ _____", true, COULEUR.BLANC);
+        Couleur.println("  | ____| \\ | |_   _|  _ \\| ____| ____|", true, COULEUR.BLANC);
+        Couleur.println("  |  _| |  \\| | | | | |_) |  _| |  _|  ", true, COULEUR.BLANC);
+        Couleur.println("  | |___| |\\  | | | |  _ <| |___| |___ ", true, COULEUR.BLANC);
+        Couleur.println("  |_____|_| \\_| |_| |_| \\_\\_____|_____|", true, COULEUR.BLANC);
+        Couleur.println("         pour continuer...", false, COULEUR.JAUNE);
+        System.out.println();
+        // next() du prenom laisse un retour a la ligne : on le consomme,
+        // puis on attend une vraie Entree.
+        if (scInputJoueur.hasNextLine()) {
+            scInputJoueur.nextLine();
         }
+        scInputJoueur.nextLine();
     }
 
 }
