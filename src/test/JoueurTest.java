@@ -52,10 +52,11 @@ public class JoueurTest {
     @Test
     public void testAcheterAvecCashInsuffisant() {
         System.out.println("testAcheterAvecCashInsuffisant");
-        joueur.acheter(entreprise, 15);
-        assertEquals(0.0, joueur.getCash());
-        assertEquals(100.0, joueur.getDette());
-        assertEquals(15, joueur.getPortefeuille().getQuantite(entreprise));
+        boolean resultat = joueur.acheter(entreprise, 15);
+        assertFalse(resultat);
+        assertEquals(100.0, joueur.getCash());
+        assertEquals(50.0, joueur.getDette());
+        assertEquals(0, joueur.getPortefeuille().getQuantite(entreprise));
     }
 
     @Test

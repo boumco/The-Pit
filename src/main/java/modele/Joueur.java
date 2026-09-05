@@ -13,18 +13,14 @@ public class Joueur extends Personnage {
         this.portefeuille = portefeuille;
     }
 
-    public void acheter(Entreprise e, int quantite) {
+    public boolean acheter(Entreprise e, int quantite) {
         double cout = quantite * e.getValeurAction();
-
-        if (cout <= cash) {
-            cash -= cout;
-        } else {
-            double manquant = cout - cash;
-            cash = 0;
-            dette += manquant;
+        if (cout > cash) {
+            return false;
         }
-
+        cash -= cout;
         portefeuille.ajouter(e, quantite);
+        return true;
     }
 
     public boolean vendre(Entreprise e, int quantite) {

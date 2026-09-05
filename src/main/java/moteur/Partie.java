@@ -55,14 +55,15 @@ public class Partie {
             Random rdm = new Random();
             if(rdm.nextInt(4) == 2){
                 EvenementPerso event = EvenementPerso.genererEvenement();
-                System.out.println(event.toString());
-                System.out.println("Debug 1");
+                
                 if(event.getInfluence().equals("Malus")){
-                    joueurActuel.setCash(joueurActuel.getCash()-event.getArgent());
-                    jour = jour - event.getJour();
-                } else {
+                    Couleur.println(event.toString(), false, COULEUR.ROUGE);
                     joueurActuel.setCash(joueurActuel.getCash()+event.getArgent());
                     jour = jour + event.getJour();
+                } else {
+                    Couleur.println(event.toString(), false, COULEUR.VERT);
+                    joueurActuel.setCash(joueurActuel.getCash()+event.getArgent());
+                    jour = jour - event.getJour();
                 }
             }
             while(!finJournee){
@@ -140,7 +141,12 @@ public class Partie {
         int nombrePart = scInputJoueur.nextInt();
         System.out.println("Chez quel entreprise souhaitez-vous acheter une/des actions ?\n Nom de l'entreprise : ");
         Entreprise entrepriseChoisie = entrepriseValide();
-        joueurActuel.acheter(entrepriseChoisie, nombrePart);
+        if (!joueurActuel.acheter(entrepriseChoisie, nombrePart)) {
+            System.out.println("Achat impossible : vous n'avez pas assez d'argent ("
+                + String.format("%.2f", joueurActuel.getCash()) + " €, besoin de "
+                + String.format("%.2f", nombrePart * entrepriseChoisie.getValeurAction()) + " €).");
+            return;
+        }
         System.out.println("Vous venez d'acheté " + nombrePart + " part(s) dans l'entreprise " + entrepriseChoisie.getNom() + ".");
     }
 
