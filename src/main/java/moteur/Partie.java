@@ -243,18 +243,10 @@ public class Partie {
     }
 
     public static void attendrePasser(){
-        System.out.println();
-        Couleur.println("   _____ _   _ _____ ____  _____ _____", true, COULEUR.BLANC);
-        Couleur.println("  | ____| \\ | |_   _|  _ \\| ____| ____|", true, COULEUR.BLANC);
-        Couleur.println("  |  _| |  \\| | | | | |_) |  _| |  _|  ", true, COULEUR.BLANC);
-        Couleur.println("  | |___| |\\  | | | |  _ <| |___| |___ ", true, COULEUR.BLANC);
-        Couleur.println("  |_____|_| \\_| |_| |_| \\_\\_____|_____|", true, COULEUR.BLANC);
-        Couleur.println("         pour continuer...", false, COULEUR.JAUNE);
-        System.out.println();
         if (scInputJoueur.hasNextLine()) {
             scInputJoueur.nextLine();
         }
-        scInputJoueur.nextLine();
+        SaisieFleches.attendreEntree();
     }
 
 }
