@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 import modele.Entreprise;
 import modele.TypeEntreprise;
+import ui.InterfaceJournal;
 
 public class Journal {
 
@@ -66,13 +67,8 @@ public class Journal {
     }
 
     public void viderInfoDuJour(){
-        for(int indice = 0; indice < this.evenementsNeutresDuJour.size(); indice ++){
-            this.evenementsNeutresDuJour.remove(indice);
-        }
-
-        for(int indice2 = 0 ; indice2 < this.evenementsNonNeutresDuJour.size(); indice2 ++){
-            this.evenementsNonNeutresDuJour.remove(indice2);
-        }
+        this.evenementsNeutresDuJour.clear();
+        this.evenementsNonNeutresDuJour.clear();
     }
 
     public void setEvenementMarches(ArrayList<EvenementMarche> evenementMarches) {
@@ -100,9 +96,7 @@ public class Journal {
 
 
     public void afficherInformation() throws IOException{
-            
         this.viderInfoDuJour();
-        this.printLogoJournal();
         if (this.evenementMarches == null || this.evenementMarches.isEmpty()) {
             System.out.println("Aucun événement à afficher aujourd'hui.");
             return;
@@ -113,22 +107,23 @@ public class Journal {
 
         for (int indice = 0; indice < this.evenementMarches.size(); indice++) {
             EvenementMarche event = this.evenementMarches.get(indice);
-            event.setInfluence(); 
+            event.setInfluence();
             if (event.influence.equals("Neutre")) {
                 neutres.add(event);
             } else {
                 nonNeutres.add(event);
-            }   
-        } 
-    
+            }
+        }
+
         Random r = new Random();
-            
+        ArrayList<EvenementMarche> uneDuJour = new ArrayList<>();
+
         for (int indiceNeutre = 0; indiceNeutre < 3; indiceNeutre++) {
             if (!neutres.isEmpty()) {
                 int index = r.nextInt(neutres.size());
                 EvenementMarche eventChoisi = neutres.get(index);
                 this.ajouterEvenementsNeutres(eventChoisi);
-                System.out.println("- " + eventChoisi); 
+                uneDuJour.add(eventChoisi);
                 neutres.remove(index);
                 this.evenementMarches.remove(eventChoisi);
             }
@@ -139,11 +134,27 @@ public class Journal {
                 int index = r.nextInt(nonNeutres.size());
                 EvenementMarche eventChoisi = nonNeutres.get(index);
                 this.ajouterEvenementsNonNeutres(eventChoisi);
-                System.out.println("- " + eventChoisi);
-                nonNeutres.remove(index); 
+                uneDuJour.add(0, eventChoisi);
+                nonNeutres.remove(index);
                 this.evenementMarches.remove(eventChoisi);
             }
         }
+
+        EvenementMarche une = uneDuJour.isEmpty() ? null : uneDuJour.get(0);
+        ArrayList<EvenementMarche> autresMarche = new ArrayList<>();
+        if (uneDuJour.size() > 1) {
+            autresMarche.add(uneDuJour.get(1));
+        }
+
+        ArrayList<FaitDivers> pool = DataLoader.chargerFaitsDivers();
+        ArrayList<FaitDivers> choisis = new ArrayList<>();
+        int maxFaits = Math.min(5, pool.size());
+        for (int i = 0; i < maxFaits; i++) {
+            int index = r.nextInt(pool.size());
+            choisis.add(pool.remove(index));
+        }
+
+        System.out.print(InterfaceJournal.afficher(une, autresMarche, choisis));
     }
 
     public void changementValeurEntreprise(List<Entreprise> listeEntreprises){
