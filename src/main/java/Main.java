@@ -28,6 +28,7 @@ public class Main {
                 Partie.lancerPartie();
             } else if(choix.equals("2")){
                 try {
+                    Partie.clearScreen();
                     Classement classement = new Classement();
                     classement.afficherScore();
                 } catch (IOException e) {
