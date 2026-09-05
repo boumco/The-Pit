@@ -13,6 +13,7 @@ import modele.Portefeuille;
 import ui.Couleur;
 import ui.Couleur.COULEUR;
 import ui.InterfaceJoueur;
+import ui.SaisieFleches;
 
 public class Partie {
 
@@ -137,10 +138,19 @@ public class Partie {
     }
 
     private static void acheter(){
-        System.out.println("Combien d'action souhaitez-vous acheter ?\n Nombre de part à acheter : ");
+        List<String> libelles = new ArrayList<>();
+        for (Entreprise e : listeEntreprises) {
+            libelles.add(e.getNom() + " : " + String.format("%.2f", e.getValeurAction()) + "€");
+        }
+        int index = SaisieFleches.choisirListe(libelles);
+        Entreprise entrepriseChoisie = listeEntreprises.get(index);
+
+        System.out.println("Nombre de parts a acheter chez " + entrepriseChoisie.getNom() + " : ");
         int nombrePart = scInputJoueur.nextInt();
-        System.out.println("Chez quel entreprise souhaitez-vous acheter une/des actions ?\n Nom de l'entreprise : ");
-        Entreprise entrepriseChoisie = entrepriseValide();
+        if (nombrePart <= 0) {
+            System.out.println("Le nombre de parts doit etre positif.");
+            return;
+        }
         if (!joueurActuel.acheter(entrepriseChoisie, nombrePart)) {
             System.out.println("Achat impossible : vous n'avez pas assez d'argent ("
                 + String.format("%.2f", joueurActuel.getCash()) + " €, besoin de "
