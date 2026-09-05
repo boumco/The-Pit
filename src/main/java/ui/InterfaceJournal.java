@@ -1,8 +1,11 @@
 package ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import moteur.EvenementMarche;
 import moteur.FaitDivers;
@@ -10,136 +13,146 @@ import ui.Couleur.COULEUR;
 
 public class InterfaceJournal {
 
-    private static final int LARGEUR_ECRAN = 120;
-    private static final int LARGEUR = 117;
-    private static final int COL = 28;
-    private static final int NB_COLONNES = 4;
-    private static int dernierEmplacement = -1;
+    private static final int LARGEUR = 120;
+    private static final int COL = 22;
+    private static final int NB_COLONNES = 5;
+    private static final String[] RUBRIQUES = {"SOCIETE", "LOCAL", "VILLE", "CHRONIQUE", "FAITS"};
+    private static final Set<Integer> derniersSlots = new HashSet<>();
 
     public static String afficher(EvenementMarche une, List<EvenementMarche> marche, List<FaitDivers> divers) {
-        String pad = " ".repeat(Math.max(0, (LARGEUR_ECRAN - LARGEUR) / 2));
-        StringBuilder sb = new StringBuilder();
         Random r = new Random();
+        List<Article> articles = new ArrayList<>();
+        for (FaitDivers fait : divers) {
+            articles.add(new Article(fait.getTitre(), fait.getExtrait(), fait.getRubrique()));
+        }
+        Collections.shuffle(articles, r);
 
-        sb.append('\n');
-        sb.append(cadre(pad));
-        sb.append(pad).append(ligneTexte("")).append('\n');
-        sb.append(masthead(pad));
-        sb.append(pad).append(ligneTexte(Couleur.colorer("  \"Ce que le diable lit au petit-dejeuner\"     1€     12 pages     Tirage de l'enfer", false, COULEUR.GRIS))).append('\n');
-        sb.append(pad).append(ligneTexte("")).append('\n');
-        sb.append(separateur(pad));
+        List<EvenementMarche> infosBourse = new ArrayList<>();
+        if (une != null) {
+            infosBourse.add(une);
+        }
+        if (marche != null) {
+            infosBourse.addAll(marche);
+        }
 
-        FaitDivers uneVisible = divers.size() > 0 ? divers.get(0) : null;
-        if (uneVisible != null) {
-            sb.append(pad).append(ligneTexte(Couleur.colorer("  A LA UNE   /   " + uneVisible.getRubrique(), false, COULEUR.ROUGE))).append('\n');
-            sb.append(pad).append(ligneTexte(Couleur.colorer("  " + uneVisible.getTitre().toUpperCase(), false, COULEUR.CYAN))).append('\n');
-            for (String ligne : wrap(uneVisible.getExtrait(), LARGEUR - 8)) {
-                sb.append(pad).append(ligneTexte("  " + Couleur.colorer(ligne, false, COULEUR.BLANC))).append('\n');
+        int nbSlots = 1 + NB_COLONNES + 3;
+        Set<Integer> slotsPris = new HashSet<>();
+        for (EvenementMarche event : infosBourse) {
+            int slot = tirerSlot(nbSlots, slotsPris, r);
+            slotsPris.add(slot);
+            Article cache = articleMarche(event, r);
+            if (slot < articles.size()) {
+                articles.add(slot, cache);
+            } else {
+                articles.add(cache);
             }
-            sb.append(separateur(pad));
+        }
+        derniersSlots.clear();
+        derniersSlots.addAll(slotsPris);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(cadre());
+        sb.append(ligneTexte(""));
+        sb.append(masthead());
+        sb.append(ligneTexte(Couleur.colorer("  \"Ce que le diable lit au petit-dejeuner\"     1€     16 pages     Tirage de l'enfer", false, COULEUR.GRIS)));
+        sb.append(ligneTexte(""));
+        sb.append(separateur());
+
+        if (!articles.isEmpty()) {
+            Article aLaUne = articles.get(0);
+            sb.append(ligneTexte(Couleur.colorer("  A LA UNE   /   " + aLaUne.rubrique, false, COULEUR.ROUGE)));
+            sb.append(ligneTexte(Couleur.colorer("  " + aLaUne.titre.toUpperCase(), false, COULEUR.CYAN)));
+            for (String ligne : wrap(aLaUne.extrait, LARGEUR - 8)) {
+                sb.append(ligneTexte("  " + Couleur.colorer(ligne, false, COULEUR.BLANC)));
+            }
+            sb.append(separateur());
         }
 
         List<List<String>> colonnes = new ArrayList<>();
-        int faitIndex = 1;
         for (int c = 0; c < NB_COLONNES; c++) {
-            FaitDivers fait = faitIndex < divers.size() ? divers.get(faitIndex) : null;
-            faitIndex++;
-            colonnes.add(colonneFait(fait));
+            int index = 1 + c;
+            colonnes.add(index < articles.size() ? colonneArticle(articles.get(index)) : new ArrayList<>());
         }
 
-        List<EvenementMarche> brieves = new ArrayList<>();
-        if (une != null) {
-            brieves.add(une);
-        }
-        if (marche != null) {
-            brieves.addAll(marche);
-        }
-
-        // A retenir : les infos bourse sont en gris et changent de colonne chaque jour,
-        // jamais celle de la veille, pour ne pas sauter aux yeux.
-        int emplacement = nouvelEmplacement(NB_COLONNES, r);
-        for (int i = 0; i < brieves.size(); i++) {
-            int slot = (emplacement + i * 2) % NB_COLONNES;
-            if (i > 0 && slot == emplacement) {
-                slot = (slot + 1) % NB_COLONNES;
-            }
-            colonnes.get(slot).add("");
-            colonnes.get(slot).addAll(colonneMarcheDiscrete(brieves.get(i)));
-        }
-
-        int haut = 0;
+        int haut = 8;
         for (List<String> col : colonnes) {
             haut = Math.max(haut, col.size());
         }
-        haut = Math.max(haut, 8);
         for (int i = 0; i < haut; i++) {
-            sb.append(pad).append(Couleur.colorer("│", false, COULEUR.GRIS));
+            StringBuilder ligne = new StringBuilder();
+            ligne.append(Couleur.colorer("│", false, COULEUR.GRIS));
             for (int c = 0; c < NB_COLONNES; c++) {
-                sb.append(caseCol(colonnes.get(c), i));
+                ligne.append(caseCol(colonnes.get(c), i));
                 if (c < NB_COLONNES - 1) {
-                    sb.append(Couleur.colorer("│", false, COULEUR.GRIS));
+                    ligne.append(Couleur.colorer("│", false, COULEUR.GRIS));
                 }
             }
-            sb.append(Couleur.colorer("│", false, COULEUR.GRIS)).append('\n');
+            ligne.append(Couleur.colorer("│", false, COULEUR.GRIS));
+            sb.append(ligneTexteSansBords(ligne.toString()));
         }
-        sb.append(separateur(pad));
-        sb.append(pad).append(ligneTexte(Couleur.colorer("  EN BREF", false, COULEUR.JAUNE))).append('\n');
-        for (int i = faitIndex; i < divers.size() && i < faitIndex + 4; i++) {
-            FaitDivers f = divers.get(i);
-            sb.append(pad).append(ligneTexte("  " + Couleur.colorer("▸ " + f.getTitre(), false, COULEUR.CYAN)
-                + Couleur.colorer("  — " + raccourcir(f.getExtrait(), 70), false, COULEUR.GRIS))).append('\n');
+        sb.append(separateur());
+        sb.append(ligneTexte(Couleur.colorer("  EN BREF", false, COULEUR.JAUNE)));
+        int debutBref = 1 + NB_COLONNES;
+        for (int i = debutBref; i < articles.size(); i++) {
+            Article a = articles.get(i);
+            sb.append(ligneTexte("  " + Couleur.colorer("▸ " + a.titre, false, COULEUR.CYAN)
+                + Couleur.colorer("  — " + raccourcir(a.extrait, 78), false, COULEUR.GRIS)));
         }
-        sb.append(pad).append(ligneTexte("")).append('\n');
-        sb.append(cadreBas(pad));
+        sb.append(ligneTexte(""));
+        sb.append(cadreBas());
         return sb.toString();
     }
 
-    private static int nouvelEmplacement(int max, Random r) {
-        int choix = r.nextInt(max);
-        if (max > 1 && choix == dernierEmplacement) {
-            choix = (choix + 1 + r.nextInt(max - 1)) % max;
+    private static int tirerSlot(int max, Set<Integer> deja, Random r) {
+        List<Integer> possibles = new ArrayList<>();
+        for (int i = 0; i < max; i++) {
+            if (!deja.contains(i) && !derniersSlots.contains(i)) {
+                possibles.add(i);
+            }
         }
-        dernierEmplacement = choix;
-        return choix;
+        if (possibles.isEmpty()) {
+            for (int i = 0; i < max; i++) {
+                if (!deja.contains(i)) {
+                    possibles.add(i);
+                }
+            }
+        }
+        if (possibles.isEmpty()) {
+            return r.nextInt(max);
+        }
+        return possibles.get(r.nextInt(possibles.size()));
     }
 
-    private static String masthead(String pad) {
+    private static Article articleMarche(EvenementMarche event, Random r) {
+        event.setInfluence();
+        String rubrique = RUBRIQUES[r.nextInt(RUBRIQUES.length)];
+        String titre = raccourcir(event.intitule, 42);
+        return new Article(titre, event.intitule, rubrique);
+    }
+
+    private static String masthead() {
         String[] lignes = {
-            "     ██████╗ ██╗████████╗     ██████╗██╗  ██╗██████╗  ██████╗ ███╗   ██╗    ██╗ ██████╗██╗     ███████╗",
-            "     ██╔══██╗██║╚══██╔══╝    ██╔════╝██║  ██║██╔══██╗██╔═══██╗████╗  ██║    ██║██╔════╝██║     ██╔════╝",
-            "     ██████╔╝██║   ██║       ██║     ███████║██████╔╝██║   ██║██╔██╗ ██║    ██║██║     ██║     █████╗  ",
-            "     ██╔═══╝ ██║   ██║       ██║     ██╔══██║██╔══██╗██║   ██║██║╚██╗██║    ██║██║     ██║     ██╔══╝  ",
-            "     ██║     ██║   ██║       ╚██████╗██║  ██║██║  ██║╚██████╔╝██║ ╚████║    ██║╚██████╗███████╗███████╗",
-            "     ╚═╝     ╚═╝   ╚═╝        ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝    ╚═╝ ╚═════╝╚══════╝╚══════╝"
+            " ██████╗ ██╗████████╗     ██████╗██╗  ██╗██████╗  ██████╗ ███╗   ██╗    ██╗ ██████╗██╗     ███████╗",
+            " ██╔══██╗██║╚══██╔══╝    ██╔════╝██║  ██║██╔══██╗██╔═══██╗████╗  ██║    ██║██╔════╝██║     ██╔════╝",
+            " ██████╔╝██║   ██║       ██║     ███████║██████╔╝██║   ██║██╔██╗ ██║    ██║██║     ██║     █████╗  ",
+            " ██╔═══╝ ██║   ██║       ██║     ██╔══██║██╔══██╗██║   ██║██║╚██╗██║    ██║██║     ██║     ██╔══╝  ",
+            " ██║     ██║   ██║       ╚██████╗██║  ██║██║  ██║╚██████╔╝██║ ╚████║    ██║╚██████╗███████╗███████╗",
+            " ╚═╝     ╚═╝   ╚═╝        ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝    ╚═╝ ╚═════╝╚══════╝╚══════╝"
         };
         StringBuilder sb = new StringBuilder();
         for (String ligne : lignes) {
-            sb.append(pad).append(ligneTexte(Couleur.colorer(raccourcir(ligne, LARGEUR - 4), false, COULEUR.ROUGE))).append('\n');
+            sb.append(ligneTexte(Couleur.colorer(ligne, false, COULEUR.ROUGE)));
         }
-        sb.append(pad).append(ligneTexte(Couleur.colorer("                    C H R O N I C L E          EDITION DU MATIN          12 PAGES", false, COULEUR.JAUNE))).append('\n');
+        sb.append(ligneTexte(Couleur.colorer("                 C H R O N I C L E          EDITION DU MATIN          16 PAGES", false, COULEUR.JAUNE)));
         return sb.toString();
     }
 
-    private static List<String> colonneFait(FaitDivers fait) {
+    private static List<String> colonneArticle(Article article) {
         List<String> lignes = new ArrayList<>();
-        if (fait == null) {
-            return lignes;
-        }
-        lignes.add(Couleur.colorer(fait.getRubrique(), false, COULEUR.MAGENTA));
-        lignes.add(Couleur.colorer(raccourcir(fait.getTitre().toUpperCase(), COL - 2), false, COULEUR.CYAN));
+        lignes.add(Couleur.colorer(article.rubrique, false, COULEUR.MAGENTA));
+        lignes.add(Couleur.colorer(raccourcir(article.titre.toUpperCase(), COL - 2), false, COULEUR.CYAN));
         lignes.add("");
-        lignes.addAll(colorerLignes(wrap(fait.getExtrait(), COL - 2), COULEUR.BLANC));
-        return lignes;
-    }
-
-    private static List<String> colonneMarcheDiscrete(EvenementMarche event) {
-        List<String> lignes = new ArrayList<>();
-        if (event == null) {
-            return lignes;
-        }
-        lignes.add(Couleur.colorer("entrefilet", false, COULEUR.GRIS));
-        lignes.add(Couleur.colorer(raccourcir(titreMarcheDiscret(event), COL - 2), false, COULEUR.GRIS));
-        lignes.addAll(colorerLignes(wrap(event.intitule, COL - 2), COULEUR.GRIS));
+        lignes.addAll(colorerLignes(wrap(article.extrait, COL - 2), COULEUR.BLANC));
         return lignes;
     }
 
@@ -149,11 +162,6 @@ public class InterfaceJournal {
             out.add(Couleur.colorer(t, false, couleur));
         }
         return out;
-    }
-
-    private static String titreMarcheDiscret(EvenementMarche e) {
-        e.setInfluence();
-        return e.getNomEntreprise() + " : note de marche";
     }
 
     private static String caseCol(List<String> col, int i) {
@@ -185,8 +193,8 @@ public class InterfaceJournal {
         if (ligne.length() > 0) {
             lignes.add(ligne.toString());
         }
-        if (lignes.size() > 6) {
-            return lignes.subList(0, 6);
+        if (lignes.size() > 7) {
+            return lignes.subList(0, 7);
         }
         return lignes;
     }
@@ -198,16 +206,16 @@ public class InterfaceJournal {
         return texte.substring(0, Math.max(0, max - 1)) + "…";
     }
 
-    private static String cadre(String pad) {
-        return pad + Couleur.colorer("╔" + "═".repeat(LARGEUR - 2) + "╗", false, COULEUR.GRIS) + "\n";
+    private static String cadre() {
+        return Couleur.colorer("╔" + "═".repeat(LARGEUR - 2) + "╗", false, COULEUR.GRIS) + "\n";
     }
 
-    private static String cadreBas(String pad) {
-        return pad + Couleur.colorer("╚" + "═".repeat(LARGEUR - 2) + "╝", false, COULEUR.GRIS) + "\n";
+    private static String cadreBas() {
+        return Couleur.colorer("╚" + "═".repeat(LARGEUR - 2) + "╝", false, COULEUR.GRIS) + "\n";
     }
 
-    private static String separateur(String pad) {
-        return pad + Couleur.colorer("╠" + "═".repeat(LARGEUR - 2) + "╣", false, COULEUR.GRIS) + "\n";
+    private static String separateur() {
+        return Couleur.colorer("╠" + "═".repeat(LARGEUR - 2) + "╣", false, COULEUR.GRIS) + "\n";
     }
 
     private static String ligneTexte(String contenu) {
@@ -216,10 +224,30 @@ public class InterfaceJournal {
         if (visible < interieur) {
             contenu = contenu + " ".repeat(interieur - visible);
         }
-        return Couleur.colorer("║", false, COULEUR.GRIS) + contenu + Couleur.colorer("║", false, COULEUR.GRIS);
+        return Couleur.colorer("║", false, COULEUR.GRIS) + contenu + Couleur.colorer("║", false, COULEUR.GRIS) + "\n";
+    }
+
+    private static String ligneTexteSansBords(String contenu) {
+        int visible = longueurVisible(contenu);
+        if (visible < LARGEUR) {
+            contenu = contenu + " ".repeat(LARGEUR - visible);
+        }
+        return contenu + "\n";
     }
 
     private static int longueurVisible(String texte) {
         return texte.replaceAll("\\u001b\\[[0-9;]*m", "").length();
+    }
+
+    private static class Article {
+        final String titre;
+        final String extrait;
+        final String rubrique;
+
+        Article(String titre, String extrait, String rubrique) {
+            this.titre = titre;
+            this.extrait = extrait;
+            this.rubrique = rubrique;
+        }
     }
 }

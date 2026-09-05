@@ -155,7 +155,7 @@ public class Journal {
 
         ArrayList<FaitDivers> pool = DataLoader.chargerFaitsDivers();
         ArrayList<FaitDivers> choisis = new ArrayList<>();
-        int maxFaits = Math.min(9, pool.size());
+        int maxFaits = Math.min(12, pool.size());
         for (int i = 0; i < maxFaits && !pool.isEmpty(); i++) {
             choisis.add(pool.remove(r.nextInt(pool.size())));
         }
