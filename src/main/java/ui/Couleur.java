@@ -35,6 +35,20 @@ public class Couleur {
      * Affiche le texte tout de suite.
      * @param fond true = couleur sur le fond, false = couleur sur le texte
      */
+    public static String colorer(String texte, boolean fond, COULEUR couleur) {
+        String debut;
+        if (fond) {
+            debut = "\u001b[" + couleur.getCodeFond() + ";30m";
+            if (couleur == COULEUR.NOIR || couleur == COULEUR.BLEU || couleur == COULEUR.ROUGE
+                    || couleur == COULEUR.MAGENTA || couleur == COULEUR.GRIS) {
+                debut = "\u001b[" + couleur.getCodeFond() + ";37m";
+            }
+        } else {
+            debut = "\u001b[" + couleur.getCodeTexte() + "m";
+        }
+        return debut + texte + "\u001b[0m";
+    }
+
     public static void println(String texte, boolean fond, COULEUR couleur) {
         println(texte, fond, couleur, 0);
     }
