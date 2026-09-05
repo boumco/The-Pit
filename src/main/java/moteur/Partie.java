@@ -202,6 +202,9 @@ public class Partie {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println();
+        Couleur.println("Entree pour revenir", false, COULEUR.JAUNE);
+        SaisieFleches.attendreEntree();
     }
 
     private static void dormir(){
@@ -248,8 +251,6 @@ public class Partie {
         Couleur.println("  |_____|_| \\_| |_| |_| \\_\\_____|_____|", true, COULEUR.BLANC);
         Couleur.println("         pour continuer...", false, COULEUR.JAUNE);
         System.out.println();
-        // next() du prenom laisse un retour a la ligne : on le consomme,
-        // puis on attend une vraie Entree.
         if (scInputJoueur.hasNextLine()) {
             scInputJoueur.nextLine();
         }
