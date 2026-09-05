@@ -2,6 +2,35 @@ package ui;
 
 public class Couleur {
 
+    public enum COULEUR {
+        NOIR(30, 40),
+        ROUGE(31, 41),
+        VERT(32, 42),
+        JAUNE(33, 43),
+        BLEU(34, 44),
+        MAGENTA(35, 45),
+        CYAN(36, 46),
+        BLANC(37, 47),
+        GRIS(90, 100),
+        ROSE(95, 105);
+
+        private final int codeTexte;
+        private final int codeFond;
+
+        COULEUR(int codeTexte, int codeFond) {
+            this.codeTexte = codeTexte;
+            this.codeFond = codeFond;
+        }
+
+        public int getCodeTexte() {
+            return codeTexte;
+        }
+
+        public int getCodeFond() {
+            return codeFond;
+        }
+    }
+
     /**
      * Affiche le texte tout de suite.
      * @param fond true = couleur sur le fond, false = couleur sur le texte

@@ -10,8 +10,8 @@ import java.util.Scanner;
 import modele.Entreprise;
 import modele.Joueur;
 import modele.Portefeuille;
-import ui.COULEUR;
 import ui.Couleur;
+import ui.Couleur.COULEUR;
 import ui.InterfaceJoueur;
 
 public class Partie {
